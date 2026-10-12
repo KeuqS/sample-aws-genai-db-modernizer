@@ -9,6 +9,14 @@
 # fails before the marker ever gets a chance to deselect anything. The marker
 # stays as a second, belt-and-suspenders guard for anyone who *does* have the
 # e2e extra installed and runs this script directly.
+#
+# Platform-only tests are deselected before --fail-on-skip on hosts where their
+# platform-specific behavior cannot be exercised. Linux keeps the RSS test in
+# this gated run, so the platform-specific regression remains mandatory there.
 source "$(dirname "$0")/lib.sh"
-log "pytest (not integration, not e2e)"
-uv run pytest tests/ --ignore=tests/e2e -m "not integration and not e2e" --fail-on-skip -n auto "$@"
+test_markers="not integration and not e2e"
+if [[ "$(uname -s)" != "Linux" ]]; then
+  test_markers+=" and not linux_only"
+fi
+log "pytest ($test_markers)"
+uv run pytest tests/ --ignore=tests/e2e -m "$test_markers" --fail-on-skip -n auto "$@"

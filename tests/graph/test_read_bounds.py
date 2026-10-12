@@ -497,6 +497,7 @@ def test_worker_memory_reads_current_rss_not_inherited_peak(tmp_path, monkeypatc
     assert worker._rss_bytes() == 1000 * os.sysconf("SC_PAGE_SIZE")
 
 
+@pytest.mark.linux_only
 @pytest.mark.skipif(not sys.platform.startswith("linux"), reason="Linux RSS inheritance")
 def test_raw_query_works_when_the_server_process_is_large(raw_client, monkeypatch):
     """A server already above the worker's memory cap can still run small raw queries."""

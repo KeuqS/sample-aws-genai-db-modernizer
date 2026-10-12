@@ -32,7 +32,9 @@ which this script's prerequisites do not install), and
 `-m "not integration and not e2e"` as a second, belt-and-suspenders guard for
 anyone running this script with the `e2e` extra already installed. Plus
 `--fail-on-skip`, so nothing in this run may silently skip. No network, no
-credentials. Accepts extra pytest args, e.g. `./ci/test.sh --cov=src
+credentials. Tests marked `linux_only` remain mandatory on Linux and are
+deselected on other hosts before `--fail-on-skip` is applied. Accepts extra
+pytest args, e.g. `./ci/test.sh --cov=src
 --cov-report=term --cov-fail-under=65` for the coverage gate CI runs with.
 
 ## `e2e.sh`
