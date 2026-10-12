@@ -133,6 +133,7 @@
   "create-analysis.source.port.constraint-text": "Default: 3306 (MySQL), 5432 (PostgreSQL)",
   "create-analysis.source.database-name.label": "Database name",
   "create-analysis.source.database-name.description": "Enter the name of the database to analyze.",
+  "create-analysis.source.database-name.constraint-text": "Use 1 to 128 letters, digits, underscores, or hyphens.",
   "create-analysis.source.credentials.label": "Credentials",
   "create-analysis.source.credentials.description": "Choose how to provide database credentials for the analysis.",
   "create-analysis.source.secret-arn.label": "Secret ARN",
