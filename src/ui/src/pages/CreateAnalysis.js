@@ -35,6 +35,7 @@ import ColumnLayout from "@cloudscape-design/components/column-layout";
 import { SideNavigationConfigurations, ApiConfigurations } from "../config/GlobalConfigurations";
 import AppHeader from "../components/AppHeader";
 import ApiManager from "../classes/ApiManager";
+import { getDatabaseNameError } from "../utils/databaseName";
 function SourceDatabaseSection({ formData, setFormData, errors }) {
   const { t } = useTranslation();
   const rdsOptions = [
@@ -137,6 +138,7 @@ function SourceDatabaseSection({ formData, setFormData, errors }) {
         </FormField>
 
         <FormField
+          constraintText={t("create-analysis.source.database-name.constraint-text")}
           description={t("create-analysis.source.database-name.description")}
           label={t("create-analysis.source.database-name.label")}
           errorText={errors.databaseName}
@@ -864,8 +866,9 @@ function DatabaseAnalysisForm() {
         newErrors.port = "Port must be a valid number between 1 and 65535";
       }
 
-      if (!formData.databaseName.trim()) {
-        newErrors.databaseName = "Database name is required";
+      const databaseNameError = getDatabaseNameError(formData.databaseName);
+      if (databaseNameError) {
+        newErrors.databaseName = databaseNameError;
       }
 
       if (formData.credentialsType === "secrets-arn") {
@@ -928,9 +931,10 @@ function DatabaseAnalysisForm() {
       newErrors.port = "Port must be a valid number between 1 and 65535";
     }
 
-    // Validate database name (required)
-    if (!formData.databaseName.trim()) {
-      newErrors.databaseName = "Database name is required";
+    // Validate database name
+    const databaseNameError = getDatabaseNameError(formData.databaseName);
+    if (databaseNameError) {
+      newErrors.databaseName = databaseNameError;
     }
 
     // Validate credentials based on type
@@ -1176,10 +1180,11 @@ function DatabaseAnalysisForm() {
         .filter(key => formData.targetDatabases[key]);
 
       // Build connection object
+      const databaseName = formData.databaseName.trim();
       const connection = {
         host: formData.host,
         port: parseInt(formData.port),
-        database: formData.databaseName,
+        database: databaseName,
         credentials_type: formData.credentialsType
       };
 
@@ -1219,7 +1224,7 @@ function DatabaseAnalysisForm() {
           method: 'POST',
           params: {
             source_database_type: "mysql", // TODO: Get from RDS instance or form
-            database_name: formData.databaseName,
+            database_name: databaseName,
             connection: connection,
             options: options,
             target_databases: targetDatabasesArray,
